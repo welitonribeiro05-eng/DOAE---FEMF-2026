@@ -7,6 +7,7 @@ O DOAE nasceu da necessidade de aproximar quem quer doar de quem precisa receber
 Projeto acadêmico desenvolvido no curso de Análise e Desenvolvimento de Sistemas (ADS).
 
 Funcionalidades:
+
 [x] Cadastro e login de doadores 
 [x] Cadastro e login de ONGs 
 [x] Publicação de itens disponíveis para doação 
