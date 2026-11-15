@@ -9,13 +9,19 @@ Projeto acadêmico desenvolvido no curso de Análise e Desenvolvimento de Sistem
 Funcionalidades:
 
 [x] Cadastro e login de doadores 
+
 [x] Cadastro e login de ONGs 
+
 [x] Publicação de itens disponíveis para doação 
+
 [x] Publicação de necessidades das ONGs 
+
 [x] Busca e filtro por tipo de item (alimentos, roupas, ração, outros) 
+
 [x] Contato entre doador e ONG 
+
 [ ] Integração com banco de dados
 
-Tecnologias
+Tecnologias:
 
 HTML, CSS e JavaScript
