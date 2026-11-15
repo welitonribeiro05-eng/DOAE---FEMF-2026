@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cadastro | DOAÊ</title><link rel="stylesheet" href="styles.css"></head>
+<body data-pag="auth"><main class="pad"><div class="form">
+<h1>Crie sua conta</h1><p class="suave">Escolha como você quer participar.</p>
+<div class="seletor"><label><input type="radio" name="tipo" value="doador" checked><span>Doador<small>Quero doar itens</small></span></label><label><input type="radio" name="tipo" value="ong"><span>ONG<small>Quero receber doações</small></span></label></div>
+<form id="f" class="cartao" novalidate data-valida></form></div></main>
+<script src="app.js"></script><script>
+const acesso=campo('usuario','Usuário')+campo('senha','Senha','password','','','Mínimo de 6 caracteres.')+campo('senha2','Confirmar senha','password');
+const chips=`<fieldset class="campo"><legend>Itens que a ONG recebe</legend><div class="chips">${Object.entries(CAT).map(([k,v])=>`<label><input type="checkbox" name="itens" value="${k}"> ${v[0]} ${v[1]}</label>`).join('')}</div><span class="erro"></span></fieldset>`;
+const T={
+ doador:campo('nome','Nome completo')+campo('cpf','CPF','text','','cpf')+campo('cidade','Cidade')+campo('endereco','Endereço residencial','text','','','Usado pelas ONGs para combinar a retirada.')+campo('telefone','Telefone / WhatsApp','tel','','tel')+campo('email','E-mail','email'),
+ ong:campo('nome','Nome da ONG')+campo('cnpj','CNPJ','text','','cnpj')+campo('cidades','Cidades onde atua','text','','','Separe por vírgula.')+campo('endereco','Endereço da sede')+chips+campo('responsavel','Nome do responsável')+campo('cpf','CPF do responsável','text','','cpf')+campo('telefone','Telefone / WhatsApp','tel','','tel')+campo('email','E-mail','email')};
+const f=$('#f');let tipo=new URLSearchParams(location.search).get('tipo')==='ong'?'ong':'doador';
+function montar(){$(`[name=tipo][value=${tipo}]`).checked=true;f.innerHTML=T[tipo]+acesso+'<button class="btn btn-salmao btn-grande">Criar conta</button>'}
+$$('[name=tipo]').forEach(r=>r.onchange=()=>{tipo=r.value;montar()});montar();
+f.onsubmit=e=>{e.preventDefault();let ok=checar(f);const d=Object.fromEntries(new FormData(f));delete d.senha2;d.tipo=tipo;
+ if(tipo==='ong'){d.itens=$$('[name=itens]:checked',f).map(c=>c.value);if(!d.itens.length){$('fieldset .erro',f).textContent='Marque pelo menos um item.';ok=false}else $('fieldset .erro',f).textContent=''}
+ if(ok&&usuarios().some(u=>u.usuario===d.usuario)){erroCampo($('#usuario'),'Este usuário já existe. Escolha outro.');ok=false}
+ if(!ok)return;gravar('usuarios',[...usuarios(),d]);location.href='login.html?novo=1'};
+</script></body></html>

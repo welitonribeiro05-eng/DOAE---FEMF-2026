@@ -1,0 +1,18 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Entrar | DOAÊ</title><link rel="stylesheet" href="styles.css"></head>
+<body data-pag="auth"><main class="pad"><div class="form">
+<h1>Que bom ver você</h1><p class="suave">Entre para continuar ajudando.</p>
+<div id="msg"></div>
+<form id="f" class="cartao" novalidate data-valida>
+<div class="seletor" style="margin-top:0"><label><input type="radio" name="tipo" value="doador" checked><span>Doador</span></label><label><input type="radio" name="tipo" value="ong"><span>ONG</span></label></div>
+<div id="c"></div><button class="btn btn-salmao btn-grande">Entrar</button>
+<p class="dica">Para testar: maria / 123456 (doador) ou esperanca / 123456 (ONG). Remova esta dica na versão final.</p></form>
+<p>Ainda não tem conta? <a href="cadastro.html">Cadastre-se</a></p></div></main>
+<script src="app.js"></script><script>
+$('#c').innerHTML=campo('usuario','Usuário')+campo('senha','Senha','password');
+if(location.search.includes('novo'))$('#msg').innerHTML='<div class="aviso ok">Conta criada! Entre para continuar.</div>';
+const f=$('#f');
+f.onsubmit=e=>{e.preventDefault();if(!checar(f))return;
+ const t=$('[name=tipo]:checked').value,u=usuarios().find(x=>x.usuario===f.usuario.value.trim()&&x.senha===f.senha.value&&x.tipo===t);
+ if(!u){$('#msg').innerHTML='<div class="aviso">Usuário, senha ou tipo de conta incorretos. Confira e tente de novo.</div>';return}
+ gravar('sessao',{usuario:u.usuario,tipo:u.tipo});location.href=u.tipo==='ong'?'home-ong.html':'home-doador.html'};
+</script></body></html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Início do doador | DOAÊ</title><link rel="stylesheet" href="styles.css"></head>
+<body data-pag="home" data-exige="doador"><main class="miolo pad">
+<h1 id="ola"></h1><p class="suave">Obrigado por doar. Veja como andam seus itens.</p>
+<div class="acoes" style="margin-top:0"><a class="btn btn-salmao btn-grande" href="doacao.html">Cadastrar item para doação</a><button class="btn btn-claro btn-grande" id="limpar">Retirar itens já doados</button></div>
+<div id="resumo"></div><h2>Seus itens</h2><div class="grade" id="lista"></div></main>
+<script src="app.js"></script><script>
+const u=eu();$('#ola').textContent='Olá, '+u.nome;
+function desenhar(){const m=itens().filter(i=>i.doador===u.usuario);
+ $('#resumo').innerHTML=stats(m,[['disponivel','Disponíveis'],['pendente','Pendentes'],['doado','Doados']]);
+ $('#lista').innerHTML=m.map(i=>cartaoItem(i,(i.status==='pendente'?`<p class="suave">Interesse de ${esc(usuarios().find(x=>x.usuario===i.ong)?.nome)}</p>`:'')+`<button class="btn btn-claro mini" data-rem="${i.id}">Remover</button>`)).join('')||'<p class="vazio">Você ainda não cadastrou nenhum item. Comece pelo botão acima.</p>'}
+$('#lista').onclick=e=>{const b=e.target.closest('[data-rem]');if(b&&confirm('Remover este item da lista?')){gravar('itens',itens().filter(i=>i.id!=b.dataset.rem));desenhar()}};
+$('#limpar').onclick=()=>{gravar('itens',itens().filter(i=>!(i.doador===u.usuario&&i.status==='doado')));desenhar()};
+desenhar();
+</script></body></html>

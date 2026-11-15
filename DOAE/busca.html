@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Buscar doações | DOAÊ</title><link rel="stylesheet" href="styles.css"></head>
+<body data-pag="interna" data-exige="ong"><main class="miolo pad">
+<h1>Buscar doações</h1><p class="suave">Encontre itens disponíveis e clique em um deles para ver o doador e entrar em contato.</p>
+<form id="f" class="filtros" onsubmit="return false">
+<div class="campo"><label for="q">O que você procura?</label><input id="q" type="search" placeholder="Ex.: arroz, casaco, ração"></div>
+<div class="campo"><label for="cat">Categoria</label><select id="cat"><option value="">Todas</option></select></div>
+<div class="campo"><label for="cidade">Cidade</label><input id="cidade" type="text"></div></form>
+<div class="grade" id="res"></div><dialog id="m"></dialog></main>
+<script src="app.js"></script><script>
+const u=eu(),m=$('#m');
+$('#cat').insertAdjacentHTML('beforeend',Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v[0]} ${v[1]}</option>`).join(''));
+function lista(){const q=$('#q').value.toLowerCase(),c=$('#cat').value,ci=$('#cidade').value.toLowerCase();
+ const r=itens().filter(i=>(i.status==='disponivel'||(i.status==='pendente'&&i.ong===u.usuario))&&(!c||i.cat===c)&&(!q||(i.nome+' '+i.descricao).toLowerCase().includes(q))&&(!ci||i.cidade.toLowerCase().includes(ci)));
+ $('#res').innerHTML=r.map(i=>cartaoItem(i,'',`data-id="${i.id}"`)).join('')||'<p class="vazio">Nenhum item encontrado. Tente outro filtro.</p>'}
+function abrir(id){const i=itens().find(x=>x.id==id),d=usuarios().find(x=>x.usuario===i.doador),meu=i.ong===u.usuario;
+ m.dataset.id=id;
+ m.innerHTML=`<h2>${esc(i.nome)}</h2><span class="selo ${i.status}">${STATUS[i.status]}</span><p>${esc(i.descricao)}</p><p><b>Quantidade:</b> ${esc(i.qtd)}</p>
+ <h3>Perfil do doador</h3><p>${esc(d.nome)}, ${esc(d.cidade)}<br>WhatsApp: <a href="https://wa.me/55${num(d.telefone)}" target="_blank" rel="noopener">${esc(d.telefone)}</a><br>E-mail: ${esc(d.email)}</p>
+ ${meu?`<p><b>Endereço:</b> ${esc(d.endereco)}</p>`:'<p class="dica">O endereço aparece depois que você marcar interesse.</p>'}
+ <div class="acoes">${i.status==='disponivel'?'<button class="btn btn-salmao" data-st="pendente">Tenho interesse</button>':'<button class="btn btn-salmao" data-st="doado">Confirmar coleta</button><button class="btn btn-claro" data-st="disponivel">Desistir</button>'}<button class="btn btn-claro" data-st="">Fechar</button></div>`;
+ m.showModal()}
+m.onclick=e=>{const b=e.target.closest('[data-st]');if(!b)return;const st=b.dataset.st;
+ if(st){const todos=itens(),i=todos.find(x=>x.id==m.dataset.id);i.status=st;if(st==='pendente')i.ong=u.usuario;if(st==='disponivel')i.ong='';gravar('itens',todos)}
+ m.close();lista()};
+$('#res').onclick=e=>{const c=e.target.closest('[data-id]');if(c)abrir(c.dataset.id)};
+$('#f').oninput=lista;lista();
+const p=new URLSearchParams(location.search).get('item');if(p&&itens().some(i=>i.id==p))abrir(p);
+</script></body></html>

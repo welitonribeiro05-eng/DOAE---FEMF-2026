@@ -1,0 +1,19 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Meu perfil | DOAÊ</title><link rel="stylesheet" href="styles.css"></head>
+<body data-pag="interna" data-exige="todos"><main class="miolo pad">
+<h1>Meu perfil</h1><div id="resumo"></div>
+<form id="f" class="cartao" novalidate data-valida style="max-width:600px"><div id="campos"></div><div id="extra"></div>
+<div class="acoes"><button type="button" class="btn" id="editar">Editar dados</button><button class="btn btn-salmao" id="salvar" hidden>Salvar</button><button type="button" class="btn btn-claro" id="cancelar" hidden>Cancelar</button></div></form>
+<div class="acoes"><a class="btn btn-salmao" id="ir"></a></div></main>
+<script src="app.js"></script><script>
+const u=eu(),ong=u.tipo==='ong',f=$('#f');
+const C=ong?[['nome','Nome da ONG'],['cnpj','CNPJ','text','cnpj'],['cidades','Cidades onde atua'],['endereco','Endereço da sede'],['responsavel','Responsável'],['cpf','CPF do responsável','text','cpf'],['telefone','Telefone / WhatsApp','tel','tel'],['email','E-mail','email']]:[['nome','Nome completo'],['cpf','CPF','text','cpf'],['cidade','Cidade'],['endereco','Endereço residencial'],['telefone','Telefone / WhatsApp','tel','tel'],['email','E-mail','email']];
+$('#campos').innerHTML=C.map(([n,r,t,m])=>campo(n,r,t,u[n],m)).join('');
+if(ong)$('#extra').innerHTML='<p><b>Itens de interesse:</b> '+u.itens.map(k=>CAT[k][0]+' '+CAT[k][1]).join(', ')+'</p>';
+const bloquear=b=>{$$('input',f).forEach(i=>i.disabled=b||['cpf','cnpj'].includes(i.name)); /* CPF e CNPJ não podem ser editados */$('#editar').hidden=!b;$('#salvar').hidden=b;$('#cancelar').hidden=b};
+bloquear(true);
+$('#editar').onclick=()=>bloquear(false);$('#cancelar').onclick=()=>location.reload();
+f.onsubmit=e=>{e.preventDefault();if(!checar(f))return;Object.assign(u,Object.fromEntries(new FormData(f)));gravar('usuarios',usuarios().map(x=>x.usuario===u.usuario?u:x));location.reload()};
+const meus=itens().filter(i=>ong?i.ong===u.usuario:i.doador===u.usuario);
+$('#resumo').innerHTML='<h2>Resumo de doações</h2>'+stats(meus,ong?[['pendente','Aguardando coleta'],['doado','Coletados']]:[['disponivel','Disponíveis'],['pendente','Pendentes'],['doado','Doados']]);
+$('#ir').href=ong?'busca.html':'doacao.html';$('#ir').textContent=ong?'Buscar doações':'Cadastrar nova doação';
+</script></body></html>

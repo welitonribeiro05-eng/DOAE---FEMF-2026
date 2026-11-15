@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Cadastrar doação | DOAÊ</title><link rel="stylesheet" href="styles.css"></head>
+<body data-pag="interna" data-exige="doador"><main class="pad"><div class="form">
+<h1>Cadastrar item para doação</h1><p class="suave">Conte o que você tem. A foto é opcional: sem ela, usamos um ícone da categoria.</p>
+<form id="f" class="cartao" novalidate data-valida>
+<div id="c"></div>
+<div class="campo"><label for="cat">Categoria</label><select id="cat" name="cat"></select><span class="erro"></span></div>
+<div class="campo"><label for="descricao">Descrição</label><textarea id="descricao" name="descricao" rows="3" data-opc placeholder="Estado, validade, tamanho..."></textarea></div>
+<div class="campo"><label for="foto">Foto (opcional)</label><input id="foto" type="file" accept="image/*"><div class="previa" id="prev" style="margin-top:8px"></div></div>
+<button class="btn btn-salmao btn-grande">Cadastrar item</button></form></div></main>
+<script src="app.js"></script><script>
+const u=eu(),f=$('#f');let foto='';
+$('#c').innerHTML=campo('nome','Nome do item')+campo('qtd','Quantidade','text','','','Ex.: 3 kg, 2 caixas, 10 peças.')+campo('cidade','Cidade da retirada','text',u.cidade);
+$('#cat').innerHTML=Object.entries(CAT).map(([k,v])=>`<option value="${k}">${v[0]} ${v[1]}</option>`).join('');
+const previa=()=>{$('#prev').innerHTML=foto?`<img src="${foto}" alt="Prévia da foto">`:CAT[$('#cat').value][0]};
+$('#cat').onchange=previa;previa();
+$('#foto').onchange=e=>{const a=e.target.files[0];if(!a){foto='';return previa()}
+ const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,600/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);foto=c.toDataURL('image/jpeg',.7);previa()};im.src=r.result};r.readAsDataURL(a)};
+f.onsubmit=e=>{e.preventDefault();if(!checar(f))return;const d=Object.fromEntries(new FormData(f));
+ gravar('itens',[...itens(),{id:Date.now(),doador:u.usuario,nome:d.nome,cat:d.cat,qtd:d.qtd,descricao:d.descricao,cidade:d.cidade,foto,status:'disponivel',ong:''}]);
+ location.href='home-doador.html'};
+</script></body></html>

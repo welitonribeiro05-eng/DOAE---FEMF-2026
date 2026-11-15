@@ -1,0 +1,13 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Início da ONG | DOAÊ</title><link rel="stylesheet" href="styles.css"></head>
+<body data-pag="home" data-exige="ong"><main class="miolo pad">
+<h1 id="ola"></h1><p class="suave" id="sub"></p>
+<div class="acoes" style="margin-top:0"><a class="btn btn-salmao btn-grande" href="busca.html">Buscar doações disponíveis</a></div>
+<div id="resumo"></div><h2>Suas últimas interações</h2><div class="grade" id="lista"></div></main>
+<script src="app.js"></script><script>
+const u=eu(),meus=itens().filter(i=>i.ong===u.usuario);
+$('#ola').textContent='Olá, '+u.nome;
+$('#sub').textContent=`Há ${itens().filter(i=>i.status==='disponivel').length} itens disponíveis para coleta agora.`;
+$('#resumo').innerHTML=stats(meus,[['pendente','Aguardando coleta'],['doado','Coletados']]);
+$('#lista').innerHTML=meus.map(i=>cartaoItem(i,'',`data-id="${i.id}"`)).join('')||'<p class="vazio">Você ainda não marcou interesse em nenhum item. Que tal buscar doações disponíveis?</p>';
+$('#lista').onclick=e=>{const c=e.target.closest('[data-id]');if(c)location.href='busca.html?item='+c.dataset.id};
+</script></body></html>
